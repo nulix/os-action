@@ -1,5 +1,5 @@
-name: 'Build NULIX OS with custom apps'
-description: 'Build and Upload NULIX OS image with custom compose apps'
+name: 'Build and deploy NULIX OS with custom apps'
+description: 'Build NULIX OS with custom apps, and deploy OTA updates'
 author: 'NULIX'
 branding:
   icon: 'terminal'

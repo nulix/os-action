@@ -1,7 +1,16 @@
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      machine:
+        description: 'Override the default MACHINE value'
+        required: false
+        type: string
 
 env:
-  MACHINE: rpi3
+  MACHINE: ${{ github.event.inputs.machine || 'rpi3' }}
 
 jobs:
   build-os:
@@ -14,27 +23,11 @@ jobs:
           sparse-checkout: |
             action.yml
             docker-compose.yml
-      - name: Fetch base NULIX OS
+      - name: Build NULIX OS with custom apps
         uses: ./
         with:
-          step_name: fetch-base-os
+          step_name: build-os
           machine: ${{ env.MACHINE }}
-      - name: Inject custom apps
-        uses: ./
-        with:
-          step_name: inject-apps
-          machine: ${{ env.MACHINE }}
-      - name: Build OS image
-        uses: ./
-        with:
-          step_name: build-os-image
-          machine: ${{ env.MACHINE }}
-      # TODO: implement this
-      # - name: Deploy OSTree repo
-      #   uses: ./
-      #   with:
-      #     step_name: deploy-ostree-repo
-      #     machine: ${{ env.MACHINE }}
       - name: Upload OS image
         uses: actions/upload-artifact@v4
         with:
