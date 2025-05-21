@@ -14,15 +14,6 @@ DISTRO="$INPUT_DISTRO"
 COMPOSE_FILE="$INPUT_COMPOSE_FILE"
 NULIX_OS_VER="$INPUT_BASE_OS_VER"
 
-# TODO: remove
-if [ -z "$API_KEY_SECRET" ]; then
-  echo "Error: API_KEY_SECRET environment variable is not set!"
-  exit 1
-else
-  echo "API key is set (value will be masked in logs): $API_KEY_SECRET"
-  exit 0
-fi
-
 LOG_ACT_ERR() {
   echo -e "${RED}[nulix/os-action]:${NC} ${@}"
 }
@@ -41,6 +32,11 @@ LOG_ACT_DBG() {
 
 init_nulix_build_env() {
   LOG_ACT_INF "Initializing NULIX OS build environment"
+
+  if [ -z "$API_KEY_SECRET" ]; then
+    LOG_ACT_ERR "API_KEY secret is not set!"
+    exit 1
+  fi
 
   source /nulix-os-venv/bin/activate
   west init -m https://github.com/nulix/nulix-os.git nulix-os
