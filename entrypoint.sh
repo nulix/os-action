@@ -47,15 +47,15 @@ fetch_os() {
   if [ "$1" = "base" ]; then
     LOG_ACT_INF "Fetching base NULIX OS v$NULIX_OS_VER for $MACHINE"
 
-    wget https://files.0xff.com.hr/$MACHINE/boot-artifacts-v2025.01.tar.gz
-    wget https://files.0xff.com.hr/$MACHINE/kernel-artifacts-rpi-6.6.y.tar.gz
-    wget https://files.0xff.com.hr/$MACHINE/$OSTREE_ROOTFS-$NULIX_OS_VER.tar.gz
-    wget https://files.0xff.com.hr/$MACHINE/$OSTREE_REPO.tar.gz
+    wget https://files.nulix.io/$MACHINE/boot-artifacts-v2025.01.tar.gz
+    wget https://files.nulix.io/$MACHINE/kernel-artifacts-rpi-6.6.y.tar.gz
+    wget https://files.nulix.io/$MACHINE/$OSTREE_ROOTFS-$NULIX_OS_VER.tar.gz
+    wget https://files.nulix.io/$MACHINE/$OSTREE_REPO.tar.gz
   elif [ "$1" = "user" ]; then
     LOG_ACT_INF "Fetching user NULIX OS for $MACHINE"
 
-    wget https://files.0xff.com.hr/$MACHINE/$OSTREE_ROOTFS-$NULIX_OS_VER.tar.gz
-    wget https://files.0xff.com.hr/$MACHINE/$OSTREE_REPO.tar.gz
+    wget https://files.nulix.io/$MACHINE/$OSTREE_ROOTFS-$NULIX_OS_VER.tar.gz
+    wget https://files.nulix.io/$MACHINE/$OSTREE_REPO.tar.gz
   fi
 
   tar xzf $OSTREE_REPO.tar.gz
