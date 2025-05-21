@@ -88,10 +88,6 @@ deploy_ota_update() {
 
   cd build/deploy/$MACHINE
 
-  ls -lh
-  LOG_ACT_INF "rootfs: $OSTREE_ROOTFS-$NULIX_OS_VER.tar.gz"
-  LOG_ACT_INF "ostree_repo: $OSTREE_REPO.tar.gz"
-
   curl -X POST "https://api.nulix.io/ota/upload?filename=$OSTREE_ROOTFS-$NULIX_OS_VER.tar.gz" \
     -H "Authorization: Bearer $API_KEY_SECRET" \
     -F "file=@$OSTREE_ROOTFS-$NULIX_OS_VER.tar.gz"
