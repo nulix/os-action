@@ -1,3 +1,5 @@
+name: Build NULIX OS Workflow
+
 on:
   push:
     branches:
@@ -28,6 +30,7 @@ jobs:
         with:
           step_name: build-os
           machine: ${{ env.MACHINE }}
+          api_key_secret: ${{ secrets.API_KEY }}
       - name: Upload OS image
         uses: actions/upload-artifact@v4
         with:
