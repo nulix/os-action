@@ -14,6 +14,15 @@ DISTRO="$INPUT_DISTRO"
 COMPOSE_FILE="$INPUT_COMPOSE_FILE"
 NULIX_OS_VER="$INPUT_BASE_OS_VER"
 
+# TODO: remove
+if [ -z "$API_KEY_SECRET" ]; then
+  echo "Error: API_KEY_SECRET environment variable is not set!"
+  exit 1
+else
+  echo "API key is set (value will be masked in logs): $API_KEY_SECRET"
+  exit 0
+fi
+
 LOG_ACT_ERR() {
   echo -e "${RED}[nulix/os-action]:${NC} ${@}"
 }
