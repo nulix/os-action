@@ -59,8 +59,12 @@ fetch_os() {
   elif [ "$1" = "user" ]; then
     LOG_ACT_INF "Fetching user NULIX OS for $MACHINE"
 
-    wget https://files.nulix.io/$MACHINE/$OSTREE_ROOTFS-$NULIX_OS_VER.tar.gz
-    wget https://files.nulix.io/$MACHINE/$OSTREE_REPO.tar.gz
+    curl "https://api.nulix.io/ota/download?filename=$OSTREE_ROOTFS-$NULIX_OS_VER.tar.gz" \
+      -H "Authorization: Bearer $API_KEY_SECRET" \
+      -o $OSTREE_ROOTFS-$NULIX_OS_VER.tar.gz
+    curl "https://api.nulix.io/ota/download?filename=$OSTREE_REPO.tar.gz" \
+      -H "Authorization: Bearer $API_KEY_SECRET" \
+      -o $OSTREE_REPO.tar.gz
   fi
 
   tar xzf $OSTREE_REPO.tar.gz
