@@ -69,7 +69,7 @@ fetch_os() {
 
   tar xzf $OSTREE_REPO.tar.gz
   mv -v $OSTREE_REPO ../../../rootfs
-  mv -v $OSTREE_ROOTFS-*.tar.gz ../../../rootfs
+  cp -v $OSTREE_ROOTFS-*.tar.gz ../../../rootfs
   rm $OSTREE_REPO.tar.gz
   cd ../../..
 }
