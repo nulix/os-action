@@ -31,6 +31,7 @@ jobs:
           step_name: build-os
           machine: ${{ env.MACHINE }}
           api_key_secret: ${{ secrets.API_KEY }}
+          machine_reg_token_secret: ${{ secrets.MACHINE_REG_TOKEN }}
       - name: Upload OS image
         uses: actions/upload-artifact@v4
         with:
