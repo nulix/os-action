@@ -38,6 +38,11 @@ init_nulix_build_env() {
     exit 1
   fi
 
+  if [ -z "$MACHINE_REG_TOKEN_SECRET" ]; then
+    LOG_ACT_ERR "MACHINE_REG_TOKEN secret is not set!"
+    exit 1
+  fi
+
   source /nulix-os-venv/bin/activate
   west init -m https://github.com/nulix/nulix-os.git nulix-os
   cd nulix-os
@@ -71,7 +76,12 @@ fetch_os() {
   mv -v $OSTREE_REPO ../../../rootfs
   cp -v $OSTREE_ROOTFS-*.tar.gz ../../../rootfs
   rm $OSTREE_REPO.tar.gz
-  cd ../../..
+
+  cd ../../../rootfs
+  curl "https://api.nulix.io/ota/download?filename=$UPD8_KEYS" \
+    -H "Authorization: Bearer $API_KEY_SECRET" \
+    -o $UPD8_KEYS
+  cd ..
 }
 
 inject_apps() {
@@ -86,8 +96,12 @@ inject_apps() {
 deploy_ota_update() {
   LOG_ACT_INF "Deploying OTA update"
 
-  cd build/deploy/$MACHINE
+  cd rootfs
+  curl -X POST "https://api.nulix.io/ota/upload?filename=$UPD8_KEYS" \
+    -H "Authorization: Bearer $API_KEY_SECRET" \
+    -F "file=@$UPD8_KEYS"
 
+  cd ../build/deploy/$MACHINE
   curl -X POST "https://api.nulix.io/ota/upload?filename=$OSTREE_ROOTFS-$NULIX_OS_VER.tar.gz" \
     -H "Authorization: Bearer $API_KEY_SECRET" \
     -F "file=@$OSTREE_ROOTFS-$NULIX_OS_VER.tar.gz"
