@@ -80,7 +80,7 @@ fetch_os() {
   cd ../../../rootfs
   curl "https://api.nulix.io/ota/download?filename=$UPD8_KEYS" \
     -H "Authorization: Bearer $API_KEY_SECRET" \
-    -o $UPD8_KEYS
+    -o $UPD8_KEYS || true
   cd ..
 }
 
