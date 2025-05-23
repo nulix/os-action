@@ -78,7 +78,7 @@ fetch_os() {
   rm $OSTREE_REPO.tar.gz
 
   cd ../../../rootfs
-  curl "https://api.nulix.io/ota/download?filename=$UPD8_KEYS" \
+  curl -s -f "https://api.nulix.io/ota/download?filename=$UPD8_KEYS" \
     -H "Authorization: Bearer $API_KEY_SECRET" \
     -o $UPD8_KEYS || true
   cd ..
