@@ -67,10 +67,10 @@ fetch_os() {
     NULIX_OS_VER="${USER_NULIX_OS_VER}"
     LOG_ACT_INF "Fetching user's NULIX OS v$NULIX_OS_VER for $MACHINE"
 
-    curl "https://api.nulix.io/ota/download?filename=$OSTREE_ROOTFS-$NULIX_OS_VER.tar.gz" \
+    curl -f "https://api.nulix.io/ota/download?filename=$OSTREE_ROOTFS-$NULIX_OS_VER.tar.gz" \
       -H "Authorization: Bearer $API_KEY_SECRET" \
       -o $OSTREE_ROOTFS-$NULIX_OS_VER.tar.gz
-    curl "https://api.nulix.io/ota/download?filename=$OSTREE_REPO.tar.gz" \
+    curl -f "https://api.nulix.io/ota/download?filename=$OSTREE_REPO.tar.gz" \
       -H "Authorization: Bearer $API_KEY_SECRET" \
       -o $OSTREE_REPO.tar.gz
   fi
