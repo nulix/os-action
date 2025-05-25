@@ -12,7 +12,8 @@ STEP_NAME="$INPUT_STEP_NAME"
 MACHINE="$INPUT_MACHINE"
 DISTRO="$INPUT_DISTRO"
 COMPOSE_FILE="$INPUT_COMPOSE_FILE"
-NULIX_OS_VER="$INPUT_BASE_OS_VER"
+BASE_NULIX_OS_VER="$INPUT_BASE_OS_VER"
+USER_NULIX_OS_VER="$INPUT_USER_OS_VER"
 
 LOG_ACT_ERR() {
   echo -e "${RED}[nulix/os-action]:${NC} ${@}"
@@ -55,6 +56,7 @@ fetch_os() {
   cd build/deploy/$MACHINE
 
   if [ "$1" = "base" ]; then
+    NULIX_OS_VER="${BASE_NULIX_OS_VER}"
     LOG_ACT_INF "Fetching base NULIX OS v$NULIX_OS_VER for $MACHINE"
 
     wget https://files.nulix.io/$MACHINE/boot-artifacts-v2025.01.tar.gz
@@ -62,7 +64,8 @@ fetch_os() {
     wget https://files.nulix.io/$MACHINE/$OSTREE_ROOTFS-$NULIX_OS_VER.tar.gz
     wget https://files.nulix.io/$MACHINE/$OSTREE_REPO.tar.gz
   elif [ "$1" = "user" ]; then
-    LOG_ACT_INF "Fetching user NULIX OS for $MACHINE"
+    NULIX_OS_VER="${USER_NULIX_OS_VER}"
+    LOG_ACT_INF "Fetching user's NULIX OS v$NULIX_OS_VER for $MACHINE"
 
     curl "https://api.nulix.io/ota/download?filename=$OSTREE_ROOTFS-$NULIX_OS_VER.tar.gz" \
       -H "Authorization: Bearer $API_KEY_SECRET" \
@@ -71,6 +74,8 @@ fetch_os() {
       -H "Authorization: Bearer $API_KEY_SECRET" \
       -o $OSTREE_REPO.tar.gz
   fi
+
+  echo "NULIX_OS_VER=${NULIX_OS_VER}" >> $GITHUB_ENV
 
   tar xzf $OSTREE_REPO.tar.gz
   mv -v $OSTREE_REPO ../../../rootfs
@@ -120,15 +125,14 @@ LOG_ACT_DBG
 LOG_ACT_DBG "================================================"
 LOG_ACT_DBG "============ Action Input Variables ============"
 LOG_ACT_DBG "================================================"
-LOG_ACT_DBG "STEP_NAME:    $STEP_NAME"
-LOG_ACT_DBG "MACHINE:      $MACHINE"
-LOG_ACT_DBG "DISTRO:       $DISTRO"
-LOG_ACT_DBG "COMPOSE_FILE: $COMPOSE_FILE"
-LOG_ACT_DBG "NULIX_OS_VER: $NULIX_OS_VER"
+LOG_ACT_DBG "STEP_NAME:         $STEP_NAME"
+LOG_ACT_DBG "MACHINE:           $MACHINE"
+LOG_ACT_DBG "DISTRO:            $DISTRO"
+LOG_ACT_DBG "COMPOSE_FILE:      $COMPOSE_FILE"
+LOG_ACT_DBG "BASE_NULIX_OS_VER: $BASE_NULIX_OS_VER"
+LOG_ACT_DBG "USER_NULIX_OS_VER: $USER_NULIX_OS_VER"
 LOG_ACT_DBG "================================================"
 LOG_ACT_DBG
-
-echo "NULIX_OS_VER=${NULIX_OS_VER}" >> $GITHUB_ENV
 
 case "$STEP_NAME" in
   build-os)
