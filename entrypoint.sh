@@ -101,12 +101,12 @@ inject_apps() {
 deploy_ota_update() {
   LOG_ACT_INF "Deploying OTA update"
 
-  cd rootfs
+  cd build/cache
   curl -X POST "https://api.nulix.io/ota/upload?filename=$UPD8_KEYS" \
     -H "Authorization: Bearer $API_KEY_SECRET" \
     -F "file=@$UPD8_KEYS"
 
-  cd ../build/deploy/$MACHINE
+  cd ../deploy/$MACHINE
   curl -X POST "https://api.nulix.io/ota/upload?filename=$OSTREE_ROOTFS-$NULIX_OS_VER.tar.gz" \
     -H "Authorization: Bearer $API_KEY_SECRET" \
     -F "file=@$OSTREE_ROOTFS-$NULIX_OS_VER.tar.gz"
