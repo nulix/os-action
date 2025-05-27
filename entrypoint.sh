@@ -59,8 +59,10 @@ fetch_os() {
     NULIX_OS_VER="${BASE_NULIX_OS_VER}"
     LOG_ACT_INF "Fetching base NULIX OS v$NULIX_OS_VER for $MACHINE"
 
-    wget https://files.nulix.io/$MACHINE/boot-artifacts-v2025.01.tar.gz
-    wget https://files.nulix.io/$MACHINE/kernel-artifacts-rpi-6.6.y.tar.gz
+    if [ "$STEP_NAME" = "build-os" ]; then
+      wget https://files.nulix.io/$MACHINE/boot-artifacts-v2025.01.tar.gz
+      wget https://files.nulix.io/$MACHINE/kernel-artifacts-rpi-6.6.y.tar.gz
+    fi
     wget https://files.nulix.io/$MACHINE/$OSTREE_ROOTFS-$NULIX_OS_VER.tar.gz
     wget https://files.nulix.io/$MACHINE/$OSTREE_REPO.tar.gz
   elif [ "$1" = "user" ]; then
@@ -154,7 +156,7 @@ case "$STEP_NAME" in
     ;;
   update-os)
     LOG_ACT_INF "Updating NULIX OS"
-    OSTREE_COMMIT_MSG="Added custom compose apps"
+    OSTREE_COMMIT_MSG="Updated base NULIX OS and added custom compose apps"
     init_nulix_build_env
     fetch_os base
     inject_apps
