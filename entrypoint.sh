@@ -82,11 +82,11 @@ fetch_os() {
   cp -v $OSTREE_ROOTFS-*.tar.gz ../../../rootfs
   rm $OSTREE_REPO.tar.gz
 
-  cd ../../../rootfs
+  cd ../../cache
   curl -s -f "https://api.nulix.io/ota/download?filename=$UPD8_KEYS" \
     -H "Authorization: Bearer $API_KEY_SECRET" \
     -o $UPD8_KEYS || true
-  cd ..
+  cd ../..
 }
 
 inject_apps() {
