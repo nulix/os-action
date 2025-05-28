@@ -23,7 +23,7 @@ inputs:
   base_os_ver:
     description: 'Base NULIX OS version'
     required: false
-    default: '1.4.1'
+    default: '1.4.2'
   user_os_ver:
     description: 'User NULIX OS version'
     required: false
