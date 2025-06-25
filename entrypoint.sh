@@ -39,11 +39,6 @@ init_nulix_build_env() {
     exit 1
   fi
 
-  if [ -z "$MACHINE_REG_TOKEN_SECRET" ]; then
-    LOG_ACT_ERR "MACHINE_REG_TOKEN secret is not set!"
-    exit 1
-  fi
-
   source /nulix-os-venv/bin/activate
   west init -m https://github.com/nulix/nulix-os.git nulix-os
   cd nulix-os
@@ -55,6 +50,33 @@ init_nulix_build_env() {
 build_bsp() {
   LOG_ACT_INF "Building BSP for $MACHINE"
   nulix build bsp
+}
+
+deploy_bsp() {
+  LOG_ACT_INF "Deploying BSP for $MACHINE"
+
+  cd nulix-os/build/deploy/$MACHINE
+  BSP_ARTIFACT=$(ls boot-artifacts-*.tar.gz)
+
+  # curl -X POST "https://api.nulix.io/ota/upload?filename=$BSP_ARTIFACT" \
+  #   -H "Authorization: Bearer $API_KEY_SECRET" \
+  #   -F "file=@$BSP_ARTIFACT"
+}
+
+build_rootfs() {
+  LOG_ACT_INF "Building rootfs for $MACHINE"
+  nulix build rootfs
+}
+
+deploy_rootfs() {
+  LOG_ACT_INF "Deploying rootfs for $MACHINE"
+
+  cd nulix-os/build/deploy/$MACHINE
+  ROOTFS_ARTIFACT=$(ls nulix-rootfs-*.tar.gz)
+
+  # curl -X POST "https://api.nulix.io/ota/upload?filename=$ROOTFS_ARTIFACT" \
+  #   -H "Authorization: Bearer $API_KEY_SECRET" \
+  #   -F "file=@$ROOTFS_ARTIFACT"
 }
 
 fetch_os() {
@@ -98,6 +120,11 @@ fetch_os() {
 
 inject_apps() {
   LOG_ACT_INF "Injecting custom compose apps into NULIX OS"
+
+  if [ -z "$MACHINE_REG_TOKEN_SECRET" ]; then
+    LOG_ACT_ERR "MACHINE_REG_TOKEN secret is not set!"
+    exit 1
+  fi
 
   mkdir rootfs/apps
   cp ../$COMPOSE_FILE rootfs/apps/docker-compose.yml
@@ -146,6 +173,19 @@ case "$STEP_NAME" in
     LOG_ACT_INF "Building BSP for $MACHINE"
     init_nulix_build_env
     build_bsp
+    ;;
+  deploy-bsp)
+    LOG_ACT_INF "Deploying BSP for $MACHINE"
+    deploy_bsp
+    ;;
+  build-rootfs)
+    LOG_ACT_INF "Building rootfs for $MACHINE"
+    init_nulix_build_env
+    build_rootfs
+    ;;
+  deploy-rootfs)
+    LOG_ACT_INF "Deploying rootfs for $MACHINE"
+    deploy_rootfs
     ;;
   build-os)
     LOG_ACT_INF "Building NULIX OS"
