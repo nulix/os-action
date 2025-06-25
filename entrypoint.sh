@@ -52,6 +52,11 @@ init_nulix_build_env() {
   MACHINE=$MACHINE DISTRO=$DISTRO source tools/setup-environment
 }
 
+build_bsp() {
+  LOG_ACT_INF "Building BSP for $MACHINE"
+  nulix build bsp
+}
+
 fetch_os() {
   cd build/deploy/$MACHINE
 
@@ -137,6 +142,10 @@ LOG_ACT_DBG "================================================"
 LOG_ACT_DBG
 
 case "$STEP_NAME" in
+  build-bsp)
+    LOG_ACT_INF "Building BSP for $MACHINE"
+    init_nulix_build_env
+    build_bsp
   build-os)
     LOG_ACT_INF "Building NULIX OS"
     OSTREE_COMMIT_MSG="Added custom compose apps"
