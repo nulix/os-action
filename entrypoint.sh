@@ -146,6 +146,7 @@ case "$STEP_NAME" in
     LOG_ACT_INF "Building BSP for $MACHINE"
     init_nulix_build_env
     build_bsp
+    ;;
   build-os)
     LOG_ACT_INF "Building NULIX OS"
     OSTREE_COMMIT_MSG="Added custom compose apps"
