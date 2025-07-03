@@ -16,18 +16,16 @@ inputs:
     description: 'Distro name'
     required: false
     default: 'nulix-docker'
+  compose_apps_repo:
+    description: 'Repository holding compose file with custom apps'
+    required: false
+    default: 'https://github.com/nulix/apps.git'
   compose_file:
     description: 'Docker compose YAML file name'
     required: false
     default: 'docker-compose.yml'
-  base_os_ver:
-    description: 'Base NULIX OS version'
+  github_token_secret:
     required: false
-    default: '1.4.2'
-  user_os_ver:
-    description: 'User NULIX OS version'
-    required: false
-    default: '0.0.0'
   api_key_secret:
     required: true
   machine_reg_token_secret:
@@ -36,12 +34,12 @@ runs:
   using: 'docker'
   image: 'Dockerfile'
   env:
+    GITHUB_TOKEN_SECRET: ${{ inputs.github_token_secret }}
     API_KEY_SECRET: ${{ inputs.api_key_secret }}
     MACHINE_REG_TOKEN_SECRET: ${{ inputs.machine_reg_token_secret }}
   args:
     - ${{ inputs.step_name }}
     - ${{ inputs.machine }}
     - ${{ inputs.distro }}
+    - ${{ inputs.compose_apps_repo }}
     - ${{ inputs.compose_file }}
-    - ${{ inputs.base_os_ver }}
-    - ${{ inputs.user_os_ver }}
