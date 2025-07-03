@@ -11,9 +11,9 @@ NC="\\e[0m"
 STEP_NAME="$INPUT_STEP_NAME"
 MACHINE="$INPUT_MACHINE"
 DISTRO="$INPUT_DISTRO"
+COMPOSE_APPS_REPO="$INPUT_COMPOSE_APPS_REPO"
 COMPOSE_FILE="$INPUT_COMPOSE_FILE"
-BASE_NULIX_OS_VER="$INPUT_BASE_OS_VER"
-USER_NULIX_OS_VER="$INPUT_USER_OS_VER"
+NULIX_OS_VER="$INPUT_NULIX_OS_VER"
 
 LOG_ACT_ERR() {
   echo -e "${RED}[nulix/os-action]:${NC} ${@}"
@@ -34,6 +34,11 @@ LOG_ACT_DBG() {
 init_nulix_build_env() {
   LOG_ACT_INF "Initializing NULIX OS build environment"
 
+  if [ -z "$MACHINE_REG_TOKEN_SECRET" ]; then
+    LOG_ACT_ERR "MACHINE_REG_TOKEN secret is not set!"
+    exit 1
+  fi
+
   if [ -z "$API_KEY_SECRET" ]; then
     LOG_ACT_ERR "API_KEY secret is not set!"
     exit 1
@@ -47,20 +52,16 @@ init_nulix_build_env() {
   MACHINE=$MACHINE DISTRO=$DISTRO source tools/setup-environment
 }
 
+fetch_apps() {
+  LOG_ACT_INF "Fetching compose apps"
+
+  git clone $COMPOSE_APPS_REPO rootfs/apps
+  cp rootfs/apps/$COMPOSE_FILE rootfs/apps/docker-compose.yml
+}
+
 build_bsp() {
   LOG_ACT_INF "Building BSP for $MACHINE"
   nulix build bsp
-}
-
-deploy_bsp() {
-  LOG_ACT_INF "Deploying BSP for $MACHINE"
-
-  cd nulix-os/build/deploy/$MACHINE
-  BSP_ARTIFACT=$(ls boot-artifacts-*.tar.gz)
-
-  # curl -X POST "https://api.nulix.io/ota/upload?filename=$BSP_ARTIFACT" \
-  #   -H "Authorization: Bearer $API_KEY_SECRET" \
-  #   -F "file=@$BSP_ARTIFACT"
 }
 
 build_rootfs() {
@@ -68,15 +69,19 @@ build_rootfs() {
   nulix build rootfs
 }
 
-deploy_rootfs() {
-  LOG_ACT_INF "Deploying rootfs for $MACHINE"
+build_ostree_repo() {
+  LOG_ACT_INF "Building ostree-repo for $MACHINE"
+  nulix build ostree-repo
+}
 
-  cd nulix-os/build/deploy/$MACHINE
-  ROOTFS_ARTIFACT=$(ls nulix-rootfs-*.tar.gz)
+build_image() {
+  LOG_ACT_INF "Building bootable disk image for $MACHINE"
+  nulix build image
+}
 
-  # curl -X POST "https://api.nulix.io/ota/upload?filename=$ROOTFS_ARTIFACT" \
-  #   -H "Authorization: Bearer $API_KEY_SECRET" \
-  #   -F "file=@$ROOTFS_ARTIFACT"
+build_os() {
+  LOG_ACT_INF "Building NULIX OS for $MACHINE"
+  nulix build os
 }
 
 fetch_os() {
@@ -118,20 +123,6 @@ fetch_os() {
   cd ../..
 }
 
-inject_apps() {
-  LOG_ACT_INF "Injecting custom compose apps into NULIX OS"
-
-  if [ -z "$MACHINE_REG_TOKEN_SECRET" ]; then
-    LOG_ACT_ERR "MACHINE_REG_TOKEN secret is not set!"
-    exit 1
-  fi
-
-  mkdir rootfs/apps
-  cp ../$COMPOSE_FILE rootfs/apps/docker-compose.yml
-
-  nulix build ostree-repo
-}
-
 deploy_ota_update() {
   LOG_ACT_INF "Deploying OTA update"
 
@@ -149,69 +140,42 @@ deploy_ota_update() {
     -F "file=@$OSTREE_REPO.tar.gz"
 }
 
-build_os_image() {
-  LOG_ACT_INF "Building NULIX OS v$NULIX_OS_VER image for $MACHINE"
-
-  nulix build image
-}
-
 LOG_ACT_DBG
 LOG_ACT_DBG "================================================"
 LOG_ACT_DBG "============ Action Input Variables ============"
 LOG_ACT_DBG "================================================"
-LOG_ACT_DBG "STEP_NAME:         $STEP_NAME"
-LOG_ACT_DBG "MACHINE:           $MACHINE"
-LOG_ACT_DBG "DISTRO:            $DISTRO"
-LOG_ACT_DBG "COMPOSE_FILE:      $COMPOSE_FILE"
-LOG_ACT_DBG "BASE_NULIX_OS_VER: $BASE_NULIX_OS_VER"
-LOG_ACT_DBG "USER_NULIX_OS_VER: $USER_NULIX_OS_VER"
+LOG_ACT_DBG "STEP_NAME:    $STEP_NAME"
+LOG_ACT_DBG "MACHINE:      $MACHINE"
+LOG_ACT_DBG "DISTRO:       $DISTRO"
+LOG_ACT_DBG "COMPOSE_FILE: $COMPOSE_FILE"
+LOG_ACT_DBG "NULIX_OS_VER: $NULIX_OS_VER"
 LOG_ACT_DBG "================================================"
 LOG_ACT_DBG
 
 case "$STEP_NAME" in
-  build-bsp)
-    LOG_ACT_INF "Building BSP for $MACHINE"
-    init_nulix_build_env
-    build_bsp
-    ;;
-  deploy-bsp)
-    LOG_ACT_INF "Deploying BSP for $MACHINE"
-    deploy_bsp
-    ;;
-  build-rootfs)
-    LOG_ACT_INF "Building rootfs for $MACHINE"
-    init_nulix_build_env
-    build_rootfs
-    ;;
-  deploy-rootfs)
-    LOG_ACT_INF "Deploying rootfs for $MACHINE"
-    deploy_rootfs
-    ;;
   build-os)
     LOG_ACT_INF "Building NULIX OS"
-    OSTREE_COMMIT_MSG="Added custom compose apps"
+    # OSTREE_COMMIT_MSG="Added custom compose apps"
     init_nulix_build_env
-    fetch_os base
-    inject_apps
-    deploy_ota_update
-    build_os_image
+    fetch_apps
+    build_os
     ;;
-  update-apps)
-    LOG_ACT_INF "Updating custom apps"
-    OSTREE_COMMIT_MSG="Updated custom compose apps"
-    init_nulix_build_env
-    fetch_os user
-    inject_apps
-    deploy_ota_update
-    ;;
-  update-os)
-    LOG_ACT_INF "Updating NULIX OS"
-    OSTREE_COMMIT_MSG="Updated base NULIX OS and added custom compose apps"
-    init_nulix_build_env
-    fetch_os base
-    inject_apps
-    deploy_ota_update
-    ;;
+  # update-apps)
+  #   LOG_ACT_INF "Updating custom apps"
+  #   OSTREE_COMMIT_MSG="Updated custom compose apps"
+  #   init_nulix_build_env
+  #   fetch_os user
+  #   inject_apps
+  #   deploy_ota_update
+  #   ;;
+  # update-os)
+  #   LOG_ACT_INF "Updating NULIX OS"
+  #   OSTREE_COMMIT_MSG="Updated base NULIX OS and added custom compose apps"
+  #   init_nulix_build_env
+  #   fetch_os base
+  #   inject_apps
+  #   deploy_ota_update
+  #   ;;
   *)
     LOG_ACT_ERR "Unknown step: $STEP_NAME"
     return 1
