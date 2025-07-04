@@ -56,7 +56,7 @@ fetch_apps() {
   LOG_ACT_INF "Fetching compose apps"
 
   git clone $COMPOSE_APPS_REPO rootfs/apps
-  cp rootfs/apps/$COMPOSE_FILE rootfs/apps/docker-compose.yml
+  cp rootfs/apps/$COMPOSE_FILE rootfs/apps/docker-compose.yml || true
 }
 
 build_bsp() {
