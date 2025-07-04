@@ -158,8 +158,10 @@ case "$STEP_NAME" in
     init_nulix_build_env
     fetch_apps
     build_os
-    # deploy_os
     ;;
+  # deploy-os)
+  #   LOG_ACT_INF "Deploying NULIX OS"
+  #   ;;
   # update-apps)
   #   LOG_ACT_INF "Updating custom apps"
   #   OSTREE_COMMIT_MSG="Updated custom compose apps"
