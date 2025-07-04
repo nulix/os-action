@@ -13,7 +13,6 @@ MACHINE="$INPUT_MACHINE"
 DISTRO="$INPUT_DISTRO"
 COMPOSE_APPS_REPO="$INPUT_COMPOSE_APPS_REPO"
 COMPOSE_FILE="$INPUT_COMPOSE_FILE"
-NULIX_OS_VER="$INPUT_NULIX_OS_VER"
 
 LOG_ACT_ERR() {
   echo -e "${RED}[nulix/os-action]:${NC} ${@}"
@@ -34,13 +33,13 @@ LOG_ACT_DBG() {
 init_nulix_build_env() {
   LOG_ACT_INF "Initializing NULIX OS build environment"
 
-  if [ -z "$MACHINE_REG_TOKEN_SECRET" ]; then
-    LOG_ACT_ERR "MACHINE_REG_TOKEN secret is not set!"
+  if [ -z "$API_KEY_SECRET" ]; then
+    LOG_ACT_ERR "API_KEY secret is not set!"
     exit 1
   fi
 
-  if [ -z "$API_KEY_SECRET" ]; then
-    LOG_ACT_ERR "API_KEY secret is not set!"
+  if [ -z "$MACHINE_REG_TOKEN_SECRET" ]; then
+    LOG_ACT_ERR "MACHINE_REG_TOKEN secret is not set!"
     exit 1
   fi
 
@@ -144,11 +143,11 @@ LOG_ACT_DBG
 LOG_ACT_DBG "================================================"
 LOG_ACT_DBG "============ Action Input Variables ============"
 LOG_ACT_DBG "================================================"
-LOG_ACT_DBG "STEP_NAME:    $STEP_NAME"
-LOG_ACT_DBG "MACHINE:      $MACHINE"
-LOG_ACT_DBG "DISTRO:       $DISTRO"
-LOG_ACT_DBG "COMPOSE_FILE: $COMPOSE_FILE"
-LOG_ACT_DBG "NULIX_OS_VER: $NULIX_OS_VER"
+LOG_ACT_DBG "STEP_NAME:         $STEP_NAME"
+LOG_ACT_DBG "MACHINE:           $MACHINE"
+LOG_ACT_DBG "DISTRO:            $DISTRO"
+LOG_ACT_DBG "COMPOSE_APPS_REPO: $COMPOSE_APPS_REPO"
+LOG_ACT_DBG "COMPOSE_FILE:      $COMPOSE_FILE"
 LOG_ACT_DBG "================================================"
 LOG_ACT_DBG
 
@@ -159,6 +158,7 @@ case "$STEP_NAME" in
     init_nulix_build_env
     fetch_apps
     build_os
+    # deploy_os
     ;;
   # update-apps)
   #   LOG_ACT_INF "Updating custom apps"
