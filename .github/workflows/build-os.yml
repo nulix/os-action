@@ -7,17 +7,22 @@ on:
   workflow_dispatch:
     inputs:
       machine:
-        description: 'Override the default MACHINE value'
+        description: "Override the default MACHINE value"
+        required: false
+        type: string
+      distro:
+        description: "Override the default DISTRO value"
         required: false
         type: string
 
 env:
-  MACHINE: ${{ github.event.inputs.machine || 'rpi3' }}
+  MACHINE: ${{ github.event.inputs.machine }}
+  DISTRO: ${{ github.event.inputs.distro }}
 
 jobs:
   build-os:
     runs-on: ubuntu-24.04-arm
-    name: Build NULIX OS with custom apps
+    name: Build NULIX OS
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -25,13 +30,16 @@ jobs:
           sparse-checkout: |
             action.yml
             docker-compose.yml
-      - name: Build NULIX OS with custom apps
+      - name: Build NULIX OS
         uses: ./
         with:
           step_name: build-os
           machine: ${{ env.MACHINE }}
+          distro: ${{ env.DISTRO }}
           api_key_secret: ${{ secrets.API_KEY }}
           machine_reg_token_secret: ${{ secrets.MACHINE_REG_TOKEN }}
+          ssh_private_key_secret: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssl_cert_secret: ${{ secrets.SSL_CERT_SECRET }}
       - name: Upload OS image
         uses: actions/upload-artifact@v4
         with:
