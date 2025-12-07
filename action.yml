@@ -1,42 +1,48 @@
-name: 'Build and deploy NULIX OS with custom apps'
-description: 'Build NULIX OS with custom apps, and deploy OTA updates'
-author: 'NULIX'
+name: "Build and deploy NULIX OS with custom apps"
+description: "Build NULIX OS with custom apps, and deploy OTA updates"
+author: "NULIX"
 branding:
-  icon: 'terminal'
-  color: 'gray-dark'
+  icon: "terminal"
+  color: "gray-dark"
 inputs:
   step_name:
-    description: 'Name of the step being executed'
+    description: "Name of the step being executed"
     required: true
   machine:
-    description: 'Machine name'
+    description: "Machine name"
     required: false
-    default: 'rpi3'
+    default: "rpi3"
   distro:
-    description: 'Distro name'
+    description: "Distro name"
     required: false
-    default: 'nulix-docker'
+    default: "alpine-docker"
   compose_apps_repo:
-    description: 'Repository holding compose file with custom apps'
+    description: "Repository holding compose file with custom apps"
     required: false
-    default: 'https://github.com/nulix/apps.git'
+    default: "https://github.com/nulix/apps.git"
   compose_file:
-    description: 'Docker compose YAML file name'
+    description: "Docker compose YAML file name"
     required: false
-    default: 'docker-compose.yml'
+    default: "docker-compose.yml"
   github_token_secret:
     required: false
   api_key_secret:
     required: true
   machine_reg_token_secret:
     required: true
+  ssh_private_key_secret:
+    required: false
+  ssl_cert_secret:
+    required: false
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
+  using: "docker"
+  image: "Dockerfile"
   env:
     GITHUB_TOKEN_SECRET: ${{ inputs.github_token_secret }}
     API_KEY_SECRET: ${{ inputs.api_key_secret }}
     MACHINE_REG_TOKEN_SECRET: ${{ inputs.machine_reg_token_secret }}
+    SSH_PRIVATE_KEY_SECRET: ${{ inputs.ssh_private_key_secret }}
+    SSL_CERT_SECRET: ${{ inputs.ssl_cert_secret }}
   args:
     - ${{ inputs.step_name }}
     - ${{ inputs.machine }}
