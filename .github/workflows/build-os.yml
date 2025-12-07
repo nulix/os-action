@@ -16,8 +16,8 @@ on:
         type: string
 
 env:
-  MACHINE: ${{ github.event.inputs.machine }}
-  DISTRO: ${{ github.event.inputs.distro }}
+  MACHINE: ${{ github.event.inputs.machine || "rpi3" }}
+  DISTRO: ${{ github.event.inputs.distro || "alpine-docker" }}
 
 jobs:
   build-os:
