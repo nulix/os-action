@@ -39,10 +39,10 @@ jobs:
           api_key_secret: ${{ secrets.API_KEY }}
           machine_reg_token_secret: ${{ secrets.MACHINE_REG_TOKEN }}
           ssh_private_key_secret: ${{ secrets.SSH_PRIVATE_KEY }}
-          ssl_cert_secret: ${{ secrets.SSL_CERT_SECRET }}
+          ssl_cert_secret: ${{ secrets.SSL_CERT }}
       - name: Upload OS image
         uses: actions/upload-artifact@v4
         with:
           name: nulix-os-${{ env.MACHINE }}-v${{ env.NULIX_OS_VER }}
           path: nulix-os/build/deploy/${{ env.MACHINE }}/nulix-os-${{ env.NULIX_OS_VER }}.img.bz2
-          retention-days: 7  # Keep the artifact for 7 days
+          retention-days: 7 # Keep the artifact for 7 days
