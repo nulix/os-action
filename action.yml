@@ -16,8 +16,8 @@ inputs:
     description: "Distro name"
     required: false
     default: "alpine-docker"
-  compose_apps_repo:
-    description: "Repository holding compose file with custom apps"
+  apps_repo:
+    description: "Repository with custom apps"
     required: false
     default: "https://github.com/nulix/apps.git"
   compose_file:
@@ -47,5 +47,5 @@ runs:
     - ${{ inputs.step_name }}
     - ${{ inputs.machine }}
     - ${{ inputs.distro }}
-    - ${{ inputs.compose_apps_repo }}
+    - ${{ inputs.apps_repo }}
     - ${{ inputs.compose_file }}
