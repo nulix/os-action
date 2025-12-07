@@ -54,8 +54,11 @@ init_nulix_build_env() {
 fetch_apps() {
   LOG_ACT_INF "Fetching compose apps"
 
-  git clone $COMPOSE_APPS_REPO rootfs/apps
-  cp rootfs/apps/$COMPOSE_FILE rootfs/apps/docker-compose.yml || true
+  git clone $APPS_REPO rootfs/apps
+
+  if [ "$VIRT_BACKEND" = "docker" ]; then
+    cp rootfs/apps/$COMPOSE_FILE rootfs/apps/docker-compose.yml || true
+  fi
 }
 
 build_bsp() {
