@@ -14,10 +14,15 @@ on:
         description: "Override the default DISTRO value"
         required: false
         type: string
+      apps_repo:
+        description: "Override the default apps repo value"
+        required: false
+        type: string
 
 env:
   MACHINE: ${{ github.event.inputs.machine || 'rpi3' }}
   DISTRO: ${{ github.event.inputs.distro || 'alpine-docker' }}
+  APPS_REPO: ${{ github.event.inputs.apps_repo || 'https://github.com/nulix/apps.git' }}
 
 jobs:
   build-os:
@@ -36,10 +41,11 @@ jobs:
           step_name: build-os
           machine: ${{ env.MACHINE }}
           distro: ${{ env.DISTRO }}
-          api_key_secret: ${{ secrets.API_KEY }}
-          machine_reg_token_secret: ${{ secrets.MACHINE_REG_TOKEN }}
-          ssh_private_key_secret: ${{ secrets.SSH_PRIVATE_KEY }}
-          ssl_cert_secret: ${{ secrets.SSL_CERT }}
+          apps_repo: ${{ env.APPS_REPO }}
+          upd8_keys: ${{ secrets.UPD8_KEYS }}
+          machine_reg_token: ${{ secrets.MACHINE_REG_TOKEN }}
+          ssh_public_key: ${{ vars.SSH_PUBLIC_KEY }}
+          ssl_cert: ${{ vars.SSL_CERT }}
       - name: Upload OS image
         uses: actions/upload-artifact@v4
         with:

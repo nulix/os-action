@@ -24,25 +24,33 @@ inputs:
     description: "Docker compose YAML file name"
     required: false
     default: "docker-compose.yml"
-  github_token_secret:
+  ssh_public_key:
+    description: "Public SSH key"
     required: false
-  api_key_secret:
-    required: true
-  machine_reg_token_secret:
-    required: true
-  ssh_private_key_secret:
+  ssl_cert:
     required: false
-  ssl_cert_secret:
+    description: "Custom SSL certificate"
+  github_token:
+    required: false
+  upd8_keys:
+    required: true
+  machine_reg_token:
+    required: true
+  aws_access_key_id:
+    required: true
+  aws_secret_access_key:
     required: false
 runs:
   using: "docker"
   image: "Dockerfile"
   env:
-    GITHUB_TOKEN_SECRET: ${{ inputs.github_token_secret }}
-    API_KEY_SECRET: ${{ inputs.api_key_secret }}
-    MACHINE_REG_TOKEN_SECRET: ${{ inputs.machine_reg_token_secret }}
-    SSH_PRIVATE_KEY_SECRET: ${{ inputs.ssh_private_key_secret }}
-    SSL_CERT_SECRET: ${{ inputs.ssl_cert_secret }}
+    GITHUB_TOKEN: ${{ inputs.github_token }}
+    UPD8_KEYS: ${{ inputs.upd8_keys }}
+    MACHINE_REG_TOKEN: ${{ inputs.machine_reg_token }}
+    AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
+    AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
+    SSH_PUBLIC_KEY: ${{ inputs.ssh_public_key }}
+    SSL_CERT: ${{ inputs.ssl_cert }}
   args:
     - ${{ inputs.step_name }}
     - ${{ inputs.machine }}
