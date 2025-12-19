@@ -56,7 +56,7 @@ init_nulix_build_env() {
 fetch_apps() {
   LOG_ACT_INF "Fetching compose apps"
 
-  git clone $APPS_REPO rootfs/apps
+  git clone $APPS_REPO rootfs/apps/apps
 
   if [ "$VIRT_BACKEND" = "docker" ]; then
     cp rootfs/apps/$COMPOSE_FILE rootfs/apps/docker-compose.yml || true
@@ -116,6 +116,7 @@ LOG_ACT_DBG "APPS_REPO:      $APPS_REPO"
 LOG_ACT_DBG "COMPOSE_FILE:   $COMPOSE_FILE"
 LOG_ACT_DBG "SSH_PUBLIC_KEY: $SSH_PUBLIC_KEY"
 LOG_ACT_DBG "SSL_CERT:       $SSL_CERT"
+LOG_ACT_DBG "UPD8_API_URL:   $UPD8_API_URL"
 LOG_ACT_DBG "S3_BUCKET:      $S3_BUCKET"
 LOG_ACT_DBG "S3_ENDPOINT:    $S3_ENDPOINT"
 LOG_ACT_DBG "JOB_ID:         $JOB_ID"

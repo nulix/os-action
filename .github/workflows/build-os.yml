@@ -46,6 +46,7 @@ jobs:
           machine_reg_token: ${{ secrets.MACHINE_REG_TOKEN }}
           ssh_public_key: ${{ vars.SSH_PUBLIC_KEY }}
           ssl_cert: ${{ vars.SSL_CERT }}
+          upd8_api_url: ${{ vars.UPD8_API_URL }}
       - name: Upload OS image
         uses: actions/upload-artifact@v4
         with:

@@ -18,5 +18,6 @@ act --container-architecture linux/arm64 \
   -s AWS_ACCESS_KEY_ID=minio \
   -s AWS_SECRET_ACCESS_KEY=minio123 \
   --var SSH_PUBLIC_KEY=ssh-dummy-key \
-  --var SSL_CERT=ssl-dummy-cert
+  --var SSL_CERT=ssl-dummy-cert \
+  --var UPD8_API_URL=https://api.nulix.local
 ```
