@@ -30,6 +30,9 @@ inputs:
   ssl_cert:
     required: false
     description: "Custom SSL certificate"
+  upd8_api_url:
+    required: false
+    description: "Custom UPD8 API URL"
   github_token:
     required: false
   upd8_keys:
@@ -51,6 +54,7 @@ runs:
     AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
     SSH_PUBLIC_KEY: ${{ inputs.ssh_public_key }}
     SSL_CERT: ${{ inputs.ssl_cert }}
+    UPD8_API_URL: ${{ inputs.upd8_api_url }}
   args:
     - ${{ inputs.step_name }}
     - ${{ inputs.machine }}
