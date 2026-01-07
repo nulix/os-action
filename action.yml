@@ -20,6 +20,10 @@ inputs:
     description: "Repository with custom apps"
     required: false
     default: "https://github.com/nulix/apps.git"
+  apps_git_ref:
+    description: "Git reference for custom apps"
+    required: false
+    default: "main"
   compose_file:
     description: "Docker compose YAML file name"
     required: false
@@ -60,4 +64,5 @@ runs:
     - ${{ inputs.machine }}
     - ${{ inputs.distro }}
     - ${{ inputs.apps_repo }}
+    - ${{ inputs.apps_git_ref }}
     - ${{ inputs.compose_file }}

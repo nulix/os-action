@@ -10,6 +10,7 @@ act --container-architecture linux/arm64 \
   --input MACHINE=rpi3 \
   --input DISTRO=alpine-none \
   --input APPS_REPO=https://github.com/nulix/apps.git \
+  --input APPS_GIT_REF=1.x \
   --input S3_BUCKET=user-id-1-project-id-2 \
   --input S3_ENDPOINT=http://minio:9000 \
   --input JOB_ID=1 \
