@@ -51,13 +51,18 @@ init_nulix_build_env() {
   cd nulix-os
   west update
 
+  if [ ! -d "bsp/machines/$MACHINE" ]; then
+    git clone https://${GIT_TOKEN}@github.com/nulix/bsp-${MACHINE}.git bsp/machines/${MACHINE}
+  fi
+
   MACHINE=$MACHINE DISTRO=$DISTRO source tools/setup-environment
 }
 
 fetch_apps() {
-  LOG_ACT_INF "Fetching compose apps"
+  LOG_ACT_INF "Fetching custom apps"
 
-  git clone $APPS_REPO rootfs/apps/apps
+  REPO_PATH=${APPS_REPO#https://}
+  git clone "https://${GIT_TOKEN}@${REPO_PATH}" rootfs/apps/apps
   cd rootfs/apps/apps
   git checkout $APPS_GIT_REF || true
   cd -
@@ -131,7 +136,7 @@ LOG_ACT_DBG
 case "$STEP_NAME" in
   build-os)
     LOG_ACT_INF "Building NULIX OS"
-    # OSTREE_COMMIT_MSG="Added custom compose apps"
+    # OSTREE_COMMIT_MSG="Added custom apps"
     init_nulix_build_env
     fetch_apps
     build_os

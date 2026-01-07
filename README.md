@@ -14,6 +14,7 @@ act --container-architecture linux/arm64 \
   --input S3_BUCKET=user-id-1-project-id-2 \
   --input S3_ENDPOINT=http://minio:9000 \
   --input JOB_ID=1 \
+  -s GIT_TOKEN=gho_1234 \
   -s UPD8_KEYS=test123 \
   -s MACHINE_REG_TOKEN=123test \
   -s AWS_ACCESS_KEY_ID=minio \
