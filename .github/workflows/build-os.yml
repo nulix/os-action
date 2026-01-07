@@ -1,4 +1,4 @@
-name: Build NULIX OS Workflow
+name: Build and Upload NULIX OS Workflow
 
 on:
   push:
@@ -7,27 +7,32 @@ on:
   workflow_dispatch:
     inputs:
       machine:
-        description: "Override the default MACHINE value"
+        description: "Override MACHINE"
         required: false
         type: string
       distro:
-        description: "Override the default DISTRO value"
+        description: "Override DISTRO"
         required: false
         type: string
       apps_repo:
-        description: "Override the default apps repo value"
+        description: "Apps repository URL"
+        required: false
+        type: string
+      apps_git_ref:
+        description: "Apps repository git ref"
         required: false
         type: string
 
 env:
-  MACHINE: ${{ github.event.inputs.machine || 'rpi3' }}
-  DISTRO: ${{ github.event.inputs.distro || 'alpine-docker' }}
-  APPS_REPO: ${{ github.event.inputs.apps_repo || 'https://github.com/nulix/apps.git' }}
+  MACHINE: ${{ inputs.machine || 'raspberry-pi3' }}
+  DISTRO: ${{ inputs.distro || 'alpine-docker' }}
+  APPS_REPO: ${{ inputs.apps_repo || 'https://github.com/nulix/apps.git' }}
+  APPS_GIT_REF: ${{ inputs.apps_git_ref || 'main' }}
 
 jobs:
   build-os:
     runs-on: ubuntu-24.04-arm
-    name: Build NULIX OS
+    name: Build and Upload NULIX OS
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -42,6 +47,8 @@ jobs:
           machine: ${{ env.MACHINE }}
           distro: ${{ env.DISTRO }}
           apps_repo: ${{ env.APPS_REPO }}
+          apps_git_ref: ${{ env.APPS_GIT_REF }}
+          git_token: ${{ secrets.GIT_TOKEN }}
           upd8_keys: ${{ secrets.UPD8_KEYS }}
           machine_reg_token: ${{ secrets.MACHINE_REG_TOKEN }}
           ssh_public_key: ${{ vars.SSH_PUBLIC_KEY }}
