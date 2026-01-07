@@ -12,6 +12,7 @@ STEP_NAME="$INPUT_STEP_NAME"
 MACHINE="$INPUT_MACHINE"
 DISTRO="$INPUT_DISTRO"
 APPS_REPO="$INPUT_APPS_REPO"
+APPS_GIT_REF="$INPUT_APPS_GIT_REF"
 COMPOSE_FILE="$INPUT_COMPOSE_FILE"
 S3_BUCKET="$INPUT_S3_BUCKET"
 S3_ENDPOINT="$INPUT_S3_ENDPOINT"
@@ -57,6 +58,9 @@ fetch_apps() {
   LOG_ACT_INF "Fetching compose apps"
 
   git clone $APPS_REPO rootfs/apps/apps
+  cd rootfs/apps/apps
+  git checkout $APPS_GIT_REF || true
+  cd -
 
   if [ "$VIRT_BACKEND" = "docker" ]; then
     cp rootfs/apps/$COMPOSE_FILE rootfs/apps/docker-compose.yml || true
@@ -113,6 +117,7 @@ LOG_ACT_DBG "STEP_NAME:      $STEP_NAME"
 LOG_ACT_DBG "MACHINE:        $MACHINE"
 LOG_ACT_DBG "DISTRO:         $DISTRO"
 LOG_ACT_DBG "APPS_REPO:      $APPS_REPO"
+LOG_ACT_DBG "APPS_GIT_REF:   $APPS_GIT_REF"
 LOG_ACT_DBG "COMPOSE_FILE:   $COMPOSE_FILE"
 LOG_ACT_DBG "SSH_PUBLIC_KEY: $SSH_PUBLIC_KEY"
 LOG_ACT_DBG "SSL_CERT:       $SSL_CERT"
